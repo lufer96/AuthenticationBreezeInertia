@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Task\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-// use Illuminate\Validation\Rule;
 
-class UpdateTaskRequest extends FormRequest
+class DeleteTaskRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +13,7 @@ class UpdateTaskRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('update', $this->task);
+        return $this->user()->can('delete', $this->task);
     }
 
     /**
@@ -25,10 +24,7 @@ class UpdateTaskRequest extends FormRequest
     public function rules()
     {
         return [
-            // Example unique'uuid_key' => ['required', Rule::unique('task')->ignore($this->task->id)],
-            'name' => 'required|max:255',
-            'description' => 'max:255',
-            'status' => 'required|boolean',
+
         ];
     }
 }

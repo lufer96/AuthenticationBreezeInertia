@@ -13,7 +13,7 @@ class StoreTaskRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->can('create', Task::class);
     }
 
     /**

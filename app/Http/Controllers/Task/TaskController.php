@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Task;
 
 use App\Models\Task;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Task\Requests\DeleteTaskRequest;
 use App\Http\Controllers\Task\Requests\StoreTaskRequest;
 use App\Http\Controllers\Task\Requests\UpdateTaskRequest;
 use App\Http\Task\Resources\TaskResource;
@@ -97,7 +98,7 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+    public function destroy(DeleteTaskRequest $request, Task $task)
     {
         try {
             $this->taskRepository->delete($task);
