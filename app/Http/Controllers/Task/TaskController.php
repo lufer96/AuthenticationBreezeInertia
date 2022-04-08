@@ -2,22 +2,45 @@
 
 namespace App\Http\Controllers\Task;
 
-use App\Models\Task;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Task\Requests\DeleteTaskRequest;
-use App\Http\Controllers\Task\Requests\StoreTaskRequest;
-use App\Http\Controllers\Task\Requests\UpdateTaskRequest;
-use App\Http\Task\Resources\TaskResource;
 use Exception;
+use App\Models\Task;
+use Inertia\Inertia;
+use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Auth\Authenticatable;
+use App\Http\Controllers\Task\Resources\TaskResource;
+use App\Http\Controllers\Task\Requests\StoreTaskRequest;
+use App\Http\Controllers\Task\Requests\DeleteTaskRequest;
+use App\Http\Controllers\Task\Requests\UpdateTaskRequest;
 
 class TaskController extends Controller
 {
 
-    public function __construct(private TaskRepository $taskRepository)
+    /**
+     * @var TaskRepository
+     */
+    private $taskRepository;
+
+    public function __construct()
     {
         $this->middleware('auth');
+
+        $closure = function (...$args) {
+            return $this->inject(...$args);
+        };
+
+        $this->middleware($closure);
     }
 
+    /**
+     * After User was authenticated, inject on this class
+     * the properties $authenticated and $taskRepository
+     */
+    public function inject($request, $next)
+    {
+        $this->authenticated = app(Authenticatable::class);
+        $this->taskRepository = app(TaskRepository::class);
+        return $next($request);
+    }
 
     /**
      * Display a listing of the resource.
@@ -26,9 +49,13 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return TaskResource::collection(
+        $task = TaskResource::collection(
             $this->taskRepository->getPaginated()
         );
+
+        return Inertia::render('Tasks/Index', [
+            'tasks' => $task,
+        ]);
     }
 
     /**

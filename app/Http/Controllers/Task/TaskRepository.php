@@ -5,15 +5,24 @@ namespace App\Http\Controllers\Task;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskRepository
 {
+    /**
+     * @var User
+     */
+    private $userAuthenticated;
 
-    public function __construct(private Task $task, private Authenticatable $user)
+    /**
+     * @param Task $task
+     * @param User $user
+     */
+    public function __construct(private Task $task, Authenticatable $user)
     {
+        $this->userAuthenticated = $user;
     }
 
     public function getQuery(): Builder
@@ -33,14 +42,14 @@ class TaskRepository
 
     public function getPaginated(int $perPage = 10): LengthAwarePaginator
     {
-        return $this->user->tasks()->paginate($perPage);
+        return $this->userAuthenticated->tasks()->paginate($perPage);
     }
 
     public function create(array $attributes): Model
     {
         /** $modelInstance = $this->newInstance()->fill($attributes);
-         * return $this->user->tasks()->save($modelInstance); */
-        return $this->user->tasks()->create($attributes);
+         * return $this->userAuthenticated->tasks()->save($modelInstance); */
+        return $this->userAuthenticated->tasks()->create($attributes);
     }
 
     public function update(array $attributes, Task $task): Model
