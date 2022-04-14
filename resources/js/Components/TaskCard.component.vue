@@ -1,13 +1,17 @@
 <script setup>
-import { computed } from 'vue';
+import { computed } from "vue";
+import ButtonCustom from "@/Components/ButtonCustom.vue";
+import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import PencilIcon from "@/Components/Icons/PencilIcon.vue";
 const props = defineProps({
     task: {
         type: Object,
         default: () => ({}),
     },
 });
-const taskTextStatus = computed(() => (props.task.status ? "Completed" : "Pending"))
-;
+const taskTextStatus = computed(() =>
+    props.task.status ? "Completed" : "Pending"
+);
 </script>
 <template>
     <div
@@ -21,7 +25,7 @@ const taskTextStatus = computed(() => (props.task.status ? "Completed" : "Pendin
                 {{ task.description }}
             </p>
         </div>
-        <div class="px-6 pt-4 pb-4 flex justify-between">
+        <div class="px-6 py-4 flex justify-between">
             <span>{{ task.user.name }}</span>
             <div class="form-check">
                 <input
@@ -37,6 +41,29 @@ const taskTextStatus = computed(() => (props.task.status ? "Completed" : "Pendin
                     {{ taskTextStatus }}
                 </label>
             </div>
+        </div>
+        <div class="px-6 py-4 flex justify-between">
+            <ButtonCustom
+                colorText="white"
+                colorBackground="red"
+                font="normal"
+                textSize="sm"
+                rounded="lg"
+            >
+                <DeleteIcon class="mr-2" />
+                Delete
+            </ButtonCustom>
+            <ButtonCustom
+                colorText="white"
+                colorBackground="blue"
+                font="normal"
+                textSize="sm"
+                rounded="lg"
+            >
+                <PencilIcon class="mr-2" />
+                Edit
+            </ButtonCustom>
+
         </div>
     </div>
 </template>
